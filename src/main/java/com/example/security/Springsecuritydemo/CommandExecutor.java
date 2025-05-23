@@ -7,21 +7,26 @@ import org.springframework.stereotype.Component;
 import com.example.security.Springsecuritydemo.entity.UserInfo;
 import com.example.security.Springsecuritydemo.repo.UserRepo;
 
+import jakarta.annotation.PostConstruct;
+
 @Component
 public class CommandExecutor implements CommandLineRunner {
+
 	@Autowired
 	UserRepo userRepo;
 
+	void saveAdminUser() {
+
+		UserInfo user = new UserInfo(1, "admin", "admin@falses.in", "Welcome@123", "admin");
+		System.out.println("Employees inserted");
+
+		// userRepo.save(user);
+	}
+
 	@Override
 	public void run(String... args) throws Exception {
+		//userRepo.save(new UserInfo(1, "admin", "admin@falses.in", "Welcome@123", "admin"));
 
-		UserInfo defaultUser = new UserInfo();
-		defaultUser.setEmail("admin@gmail.com");
-		defaultUser.setName("admin");
-		defaultUser.setPassword("admin");
-		defaultUser.setRoles("admin");
-
-		userRepo.save(defaultUser);
 	}
 
 }

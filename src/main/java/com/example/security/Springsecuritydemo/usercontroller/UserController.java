@@ -18,7 +18,7 @@ public class UserController {
 	@Autowired
 	UserService userservice;
 
-	@PostMapping("/auth")
+	@PostMapping("/genratetoken")
 	public void authenticate() {
 
 	}
