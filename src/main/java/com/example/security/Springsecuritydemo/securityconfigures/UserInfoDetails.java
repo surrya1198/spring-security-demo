@@ -8,15 +8,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.security.Springsecuritydemo.entity.UserInfo;
+import com.example.security.Springsecuritydemo.entity.UserDetailsInfos;
 
 public class UserInfoDetails implements UserDetails {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 	List<GrantedAuthority> grantAuth;
 
-	public UserInfoDetails(UserInfo userInfo) {
+	public UserInfoDetails(UserDetailsInfos userInfo) {
 //		super();
 		this.username = userInfo.getUsername();
 		this.password = userInfo.getPassword();

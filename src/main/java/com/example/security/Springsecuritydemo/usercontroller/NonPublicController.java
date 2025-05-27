@@ -8,26 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.security.Springsecuritydemo.dto.UserDto;
-import com.example.security.Springsecuritydemo.entity.UserAuthRequest;
 import com.example.security.Springsecuritydemo.entity.UserDetailsInfos;
 import com.example.security.Springsecuritydemo.userservice.UserService;
 
 @RestController
-@RequestMapping("/api/public")
-public class UserController {
-
+@RequestMapping("/user")
+public class NonPublicController {
+	
 	@Autowired
 	UserService userservice;
-
-	@PostMapping("/genratetoken")
-	public void authenticate() {
-
-	}
-
-	@PostMapping("/register")
-	public ResponseEntity<UserDto>createUser(@RequestBody UserAuthRequest user) {
-		return ResponseEntity.ofNullable(userservice.register(user));
+	
+	@PostMapping("/login")
+	public ResponseEntity<UserDto> addUser(@RequestBody UserDetailsInfos user) {
+		return ResponseEntity.ofNullable(userservice.addUser(user));
 
 	}
-
 }

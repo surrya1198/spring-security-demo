@@ -18,7 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Component
+
 public class JwtFilter extends OncePerRequestFilter {
 
 	public UserDetailsService userdetailservice;
@@ -33,21 +33,18 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		if ((request.getRequestURI().equals("/h2-console"))) {
-
-			filterChain.doFilter(request, response);
-		} else {
+		
 			String token = request.getHeader("Authorization");
 			// token = token.replace("Bearer", "");
 			// String username = jwtservice.getUserName(token);
 
-			UserDetails userDetails = userdetailservice.loadUserByUsername("");
-			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null);
+			UserDetails userDetails = userdetailservice.loadUserByUsername("test");
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(token, userDetails.getPassword());
 			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authToken);
 			filterChain.doFilter(request, response);
 		}
-	}
+	
 
 
 
