@@ -18,11 +18,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
+@Component
 public class JwtFilter extends OncePerRequestFilter {
 
 	public UserDetailsService userdetailservice;
 	public JwTservice jwtservice;
+	public UserDetailsService user;
 
 	public JwtFilter(UserDetailsService userDetailService, JwTservice service) {
 		this.userdetailservice = userDetailService;
@@ -33,19 +34,29 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
-			String token = request.getHeader("Authorization");
-			// token = token.replace("Bearer", "");
-			// String username = jwtservice.getUserName(token);
 
-			UserDetails userDetails = userdetailservice.loadUserByUsername("test");
-			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(token, userDetails.getPassword());
-			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			SecurityContextHolder.getContext().setAuthentication(authToken);
-			filterChain.doFilter(request, response);
+		String BearerToken = request.getHeader("Authorization");
+		String userName = null;
+		if (BearerToken != null && BearerToken.startsWith("Bearer")) {
+
+			String token = BearerToken.substring(7);
+			userName = jwtservice.getUserName(token);
 		}
-	
+		if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+			UserDetails userDetails = user.loadUserByUsername(userName);
 
+			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null,
+					userDetails.getAuthorities());
+			// since the authentication should know about the details we need to set the
+			// below details
+			token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+			// finally set the token to the security context....
+			SecurityContextHolder.getContext().setAuthentication(token);
+
+		}
+		filterChain.doFilter(request, response);
+	}
 
 }

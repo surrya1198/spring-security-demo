@@ -34,9 +34,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SecurityConfig {
 
 	UserDetService user;
+	JwtFilter jwt;
 
-	public SecurityConfig(UserDetService usee) {
+	public SecurityConfig(UserDetService usee, JwtFilter jwtFilter) {
 		this.user = usee;
+		this.jwt = jwtFilter;
 
 	}
 
@@ -44,13 +46,15 @@ public class SecurityConfig {
 	protected SecurityFilterChain securityfilter(HttpSecurity http) throws Exception {
 
 		http.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/public/**", "/h2-console/**").permitAll() // ✅
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/api/public/**", "/api/public/genratetoken", "/h2-console/**").permitAll() // ✅
 						// public
 						.anyRequest().authenticated() // 🔒 authenticated routes
 				).authenticationProvider(authProvider()).userDetailsService(user)
-				.headers(headers -> headers.frameOptions(fr -> fr.disable()).disable()).formLogin(withDefaults())
-				.httpBasic(withDefaults())
-				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+				.headers(headers -> headers.frameOptions(fr -> fr.disable()).disable())
+				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
 
 	}
@@ -64,11 +68,11 @@ public class SecurityConfig {
 
 	}
 
-//	@Bean
-//	protected AuthenticationManager authenticationmanger(AuthenticationConfiguration config) throws Exception {
-//
-//		return config.getAuthenticationManager();
-//	}
+	@Bean
+	protected AuthenticationManager authenticationmanger(AuthenticationConfiguration config) throws Exception {
+
+		return config.getAuthenticationManager();
+	}
 
 	@Bean
 	protected PasswordEncoder passwordEncoder() {

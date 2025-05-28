@@ -1,5 +1,8 @@
 package com.example.security.Springsecuritydemo.userservice;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +26,7 @@ public class UserService {
 		userDto.setEmail(userInfo.getEmail());
 		userDto.setName(userInfo.getUsername());
 		userDto.setRoles(userInfo.getRoles());
-		userRepo.save(userInfo);
+		// userRepo.save(userInfo);
 		return userDto;
 	}
 
@@ -39,6 +42,11 @@ public class UserService {
 		userDto.setName(user.getUsername());
 
 		return userDto;
+	}
+
+	public Optional<List<UserDetailsInfos>> getAllDetails() {
+
+		return Optional.of(userRepo.findAll());
 	}
 
 }
