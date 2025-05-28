@@ -50,7 +50,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/public/**", "/api/public/genratetoken", "/h2-console/**").permitAll() // ✅
 						// public
 						.anyRequest().authenticated() // 🔒 authenticated routes
-				).authenticationProvider(authProvider()).userDetailsService(user)
+				).authenticationProvider(authProvider())
 				.headers(headers -> headers.frameOptions(fr -> fr.disable()).disable())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);

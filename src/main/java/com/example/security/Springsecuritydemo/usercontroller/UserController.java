@@ -38,7 +38,10 @@ public class UserController {
 		if(authentication.isAuthenticated()) {
 		return jwtservice.genrateToken(user);
 		}
+		else {
 		throw new UsernameNotFoundException("user does not exist");
+		}
+		
 		
 
 	}
